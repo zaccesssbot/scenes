@@ -119,3 +119,7 @@ floor for a stronger palette colour. The shared checks fail on any colour that s
    one.
 4. The crates.io, Homebrew and winget steps in [packaging/README.md](packaging/README.md) follow,
    each run by a maintainer.
+
+## Using AI
+
+AI tools are welcome within the [AI policy](https://github.com/zacesshq/.github/blob/main/AI_POLICY.md). **Every pull request must say how AI was used, even when the answer is None.** Write your own issue and pull request titles and descriptions, understand everything you submit and test it before you open it.
