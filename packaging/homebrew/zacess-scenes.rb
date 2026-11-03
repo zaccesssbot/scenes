@@ -1,40 +1,42 @@
-# Homebrew formula template for Zacess Scenes. Replace VERSION with the release version (without
-# the v) and each SHA256_ placeholder with the sum from the matching .sha256 file on the release,
-# then copy it to Formula/zacess-scenes.rb in the zacesshq/homebrew-tap repository.
+# Homebrew formula for Zacess Scenes 0.6.0, for Formula/zacess-scenes.rb in the zacesshq/homebrew-tap
+# repository. Each SHA256_ placeholder is the sum from the matching .sha256 file attached to the
+# v0.6.0 release; packaging/fill-checksums.sh fills them in. The next release changes the version
+# in the four URLs and the four sums.
 class ZacessScenes < Formula
   desc "Calm animated scenes for the terminal in the Zacess high contrast themes"
   homepage "https://zacess.com"
-  version "VERSION"
+  version "0.6.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/zacesshq/scenes/releases/download/vVERSION/zacess-scenes-vVERSION-aarch64-apple-darwin.tar.gz"
-      sha256 "SHA256_MACOS_ARM"
+      url "https://github.com/zacesshq/scenes/releases/download/v0.6.0/zacess-scenes-v0.6.0-aarch64-apple-darwin.tar.gz"
+      sha256 "SHA256_AARCH64_APPLE_DARWIN"
     end
     on_intel do
-      url "https://github.com/zacesshq/scenes/releases/download/vVERSION/zacess-scenes-vVERSION-x86_64-apple-darwin.tar.gz"
-      sha256 "SHA256_MACOS_INTEL"
+      url "https://github.com/zacesshq/scenes/releases/download/v0.6.0/zacess-scenes-v0.6.0-x86_64-apple-darwin.tar.gz"
+      sha256 "SHA256_X86_64_APPLE_DARWIN"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/zacesshq/scenes/releases/download/vVERSION/zacess-scenes-vVERSION-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "SHA256_LINUX_ARM"
+      url "https://github.com/zacesshq/scenes/releases/download/v0.6.0/zacess-scenes-v0.6.0-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "SHA256_AARCH64_UNKNOWN_LINUX_MUSL"
     end
     on_intel do
-      url "https://github.com/zacesshq/scenes/releases/download/vVERSION/zacess-scenes-vVERSION-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "SHA256_LINUX_INTEL"
+      url "https://github.com/zacesshq/scenes/releases/download/v0.6.0/zacess-scenes-v0.6.0-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "SHA256_X86_64_UNKNOWN_LINUX_MUSL"
     end
   end
 
   def install
     bin.install "zacess-scenes"
+    doc.install "README.md", "CHANGELOG.md", "ACCESSIBILITY.md", "NOTICE.md"
   end
 
   test do
-    assert_match "zacess-scenes", shell_output("#{bin}/zacess-scenes --version")
+    assert_match "zacess-scenes #{version}", shell_output("#{bin}/zacess-scenes --version")
     system bin/"zacess-scenes", "sea", "--headless", "--frames", "1", "--size", "20x8", "--theme", "deep-dark"
   end
 end

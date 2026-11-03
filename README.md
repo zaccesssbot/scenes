@@ -4,6 +4,11 @@ Calm animated scenes for the terminal, drawn in the eight [Zacess](https://zaces
 themes. It is also a build monitor for projects in any language and can follow a shell, showing
 how each command ended as a scene.
 
+[![CI](https://github.com/zacesshq/scenes/actions/workflows/ci.yml/badge.svg)](https://github.com/zacesshq/scenes/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/zacesshq/scenes?label=release)](https://github.com/zacesshq/scenes/releases/latest)
+[![Licence: MIT](https://img.shields.io/badge/licence-MIT-green.svg)](LICENSE)
+[![crates.io](https://img.shields.io/crates/v/zacess-scenes)](https://crates.io/crates/zacess-scenes)
+
 | While the build passes | While it fails |
 | --- | --- |
 | ![The watch mode while a build passes: a calm sea under a sun with a large ALL GOOD banner, a check mark, a caption and a status bar reading passing](docs/images/scenes/watch-pass.svg) | ![The watch mode while a build fails: a storm with a large BUILD FAILED banner, a cross, two errors with their locations and a status bar reading failing](docs/images/scenes/watch-fail.svg) |
@@ -13,10 +18,6 @@ Zacess theme the terminal is using, keeps every colour at 4.5 to 1 contrast or b
 the High Contrast and Deep Contrast themes), never flashes and slows down when the system or the
 person asks for reduced motion. A scene fits any terminal from 20 columns by 8 rows up to a full
 screen.
-
-> [!NOTE]
-> The Homebrew tap and the winget package are being set up; until then install with Cargo or from
-> a release binary.
 
 ## Quick start
 
@@ -32,6 +33,33 @@ zacess-scenes follow                # how each command in this tmux session ende
 While a scene runs `n` shows the next scene, `b` the one before, `a` turns the background sound on
 or off, `Space` pauses and `q` quits. Follow mode needs a one-line hook in the shell:
 `eval "$(zacess-scenes follow init zsh)"` (see [follow mode](docs/follow-mode.md)).
+
+## How it works
+
+```mermaid
+flowchart LR
+    subgraph SETTINGS["Settings"]
+        FLAGS["Flags and<br/>environment variables"]
+        CONFIG["scenes.toml"]
+        THEME["Theme state file<br/>shared with the Zacess themes"]
+    end
+    subgraph FOLLOWED["What a scene can follow"]
+        BUILD["A project's own check<br/>bacon, npm, pytest, go, make"]
+        SHELL["The shell hook<br/>zsh, bash, fish, PowerShell"]
+    end
+    SETTINGS --> APP["zacess-scenes"]
+    BUILD -- "watch" --> APP
+    SHELL -- "follow" --> APP
+    APP --> SCENE["Scene<br/>built in or written in Lua"]
+    SCENE --> RENDER["Renderer<br/>palette roles at 4.5 to 1 or better,<br/>flash meter, reduced motion"]
+    RENDER --> TERM["Terminal frame<br/>with the status bar and captions"]
+    RENDER --> SVG["SVG still or JSON frames<br/>from snapshot"]
+    APP -- "pass, fail, recovered, typo" --> SOUND["Tones, background sound<br/>and desktop notifications"]
+```
+
+A scene never picks a colour of its own. It asks for a palette role (`text`, `muted`, `accent`, `blue` and
+so on) and the renderer looks that role up in the active theme, so every colour keeps the contrast
+floor whichever theme is on and whoever wrote the scene.
 
 ## Documentation
 
@@ -107,18 +135,45 @@ the same phrase for each event, so the meaning carries over; only the timbre dif
 
 ## Install
 
-### With Cargo
+| System | Shortest route |
+| --- | --- |
+| macOS and Linux | [Homebrew](#homebrew-macos-and-linux) |
+| Windows | [winget](#winget-windows) |
+| Anywhere with a Rust toolchain | [Cargo](#cargo-cratesio) |
+| Anywhere else and any machine without a package manager | [A release archive](#a-release-archive) |
 
-Zacess Scenes is not on crates.io yet, so Cargo installs it from a release tag here:
+### Homebrew (macOS and Linux)
 
 ```sh
-cargo install --locked --git https://github.com/zacesshq/scenes --tag v0.5.1 zacess-scenes
+brew install zacesshq/tap/zacess-scenes
+```
+
+The formula installs the release binary for the machine (Apple silicon, Intel, Linux on x86-64 or
+ARM64) after Homebrew has checked it against the checksum recorded in the formula. `brew upgrade
+zacess-scenes` moves to a newer release.
+
+### winget (Windows)
+
+```powershell
+winget install Zacess.Scenes
+```
+
+Each release is submitted to the [winget community repository](https://github.com/microsoft/winget-pkgs)
+once its files are attached, so the newest version can take a day or two to reach winget. The
+release archive below is current straight away.
+
+### Cargo (crates.io)
+
+```sh
+cargo install --locked zacess-scenes
 ```
 
 Rust 1.85 or later and a C compiler, since Lua 5.4 is built into the program. The dependencies are
-crossterm, mlua with its own copy of Lua and signal-hook on Unix.
+crossterm, mlua with its own copy of Lua and signal-hook on Unix. The crate on
+[crates.io](https://crates.io/crates/zacess-scenes) carries the code, the docs and the licence; the
+gallery stills stay here.
 
-### From a release
+### A release archive
 
 Each [release](https://github.com/zacesshq/scenes/releases/latest) carries a built binary for:
 
@@ -130,13 +185,52 @@ Each [release](https://github.com/zacesshq/scenes/releases/latest) carries a bui
 | `zacess-scenes-<tag>-aarch64-unknown-linux-musl.tar.gz` | Linux on ARM64, no shared libraries needed |
 | `zacess-scenes-<tag>-x86_64-pc-windows-msvc.zip` | Windows on x86-64 |
 
-Each archive has a `.sha256` file beside it. Check the sum, unpack the archive and put
-`zacess-scenes` (or `zacess-scenes.exe`) somewhere on your `PATH`.
+Each archive has a `.sha256` file beside it. Download both into the same folder, check the sum,
+unpack the archive and put `zacess-scenes` (or `zacess-scenes.exe`) somewhere on your `PATH`.
+
+On macOS:
 
 ```sh
-shasum -a 256 -c zacess-scenes-v0.5.1-aarch64-apple-darwin.tar.gz.sha256
-tar -xzf zacess-scenes-v0.5.1-aarch64-apple-darwin.tar.gz
+shasum -a 256 -c zacess-scenes-v0.6.0-aarch64-apple-darwin.tar.gz.sha256
+tar -xzf zacess-scenes-v0.6.0-aarch64-apple-darwin.tar.gz
+install -m 755 zacess-scenes-v0.6.0-aarch64-apple-darwin/zacess-scenes ~/.local/bin/
 ```
+
+On Linux:
+
+```sh
+sha256sum -c zacess-scenes-v0.6.0-x86_64-unknown-linux-musl.tar.gz.sha256
+tar -xzf zacess-scenes-v0.6.0-x86_64-unknown-linux-musl.tar.gz
+install -m 755 zacess-scenes-v0.6.0-x86_64-unknown-linux-musl/zacess-scenes ~/.local/bin/
+```
+
+On Windows, in PowerShell, the two hashes printed must match:
+
+```powershell
+(Get-FileHash .\zacess-scenes-v0.6.0-x86_64-pc-windows-msvc.zip).Hash
+Get-Content .\zacess-scenes-v0.6.0-x86_64-pc-windows-msvc.zip.sha256
+Expand-Archive .\zacess-scenes-v0.6.0-x86_64-pc-windows-msvc.zip -DestinationPath .
+```
+
+### From a script
+
+A setup script can keep a machine on the newest release without a package manager. The release
+names follow one pattern, so the script asks GitHub for the latest tag, downloads the archive for
+its own platform with the `.sha256` file and checks the sum before installing:
+
+```sh
+tag="$(curl -fsSL https://api.github.com/repos/zacesshq/scenes/releases/latest | sed -n 's/.*"tag_name": *"\(v[0-9.]*\)".*/\1/p')"
+target=aarch64-apple-darwin   # or x86_64-apple-darwin, x86_64-unknown-linux-musl, aarch64-unknown-linux-musl
+name="zacess-scenes-$tag-$target"
+curl -fsSLO "https://github.com/zacesshq/scenes/releases/download/$tag/$name.tar.gz"
+curl -fsSLO "https://github.com/zacesshq/scenes/releases/download/$tag/$name.tar.gz.sha256"
+shasum -a 256 -c "$name.tar.gz.sha256"   # sha256sum -c on Linux
+tar -xzf "$name.tar.gz"
+install -m 755 "$name/zacess-scenes" ~/.local/bin/
+```
+
+`zacess-scenes --version` prints the installed version, so a script can skip the download when it
+already matches the tag.
 
 ## Accessibility
 

@@ -142,8 +142,8 @@ whatever the random numbers say (`MIN_LIGHTNING_GAP`).
 
 The watch mode shows a storm while a build fails. It is the rain scene with twice the drops, a
 stronger wind that slants the near drops to `/` and a second, offset row of cloud below the first.
-Its bolts come every 5 to 9 seconds instead of 5 to 15, with the same five second minimum gap, and
-the first bolt waits five seconds from the moment the storm appears, so the change to a storm never
+Its bolts come every 5 to 9 seconds instead of 5 to 15, with the same five second minimum gap.
+The first bolt waits five seconds from the moment the storm appears, so the change to a storm never
 opens with a flash. Since 0.3.0 it is a scene of its own, `storm`, so it runs on its own and can go in the fail list.
 
 - Colours: the same as the rain.

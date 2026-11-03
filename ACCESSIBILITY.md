@@ -89,8 +89,8 @@ Nothing in any scene flashes: no scene changes the whole screen or a large area 
   opposing changes make one flash, so that is at most one and a half flashes a second, half the
   three a second WCAG 2.3.1 allows. A test proves the meter catches a flashing screen and a
   flashing corner and ignores a small moving shape.
-- The same meter runs live on Lua scenes, holding back any frame that would break the limit, and
-  on the frames `snapshot --frames` writes.
+- The same meter runs live on Lua scenes, holding back any frame that would break the limit. It
+  runs on the frames `snapshot --frames` writes too.
 - Things that change in place keep to the limits below, which are constants in the code with
   tests that hold them:
 

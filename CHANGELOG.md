@@ -6,9 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-03
+
+### Added
+
+- The crate is published on crates.io, so `cargo install zacess-scenes` builds the program from the source of this release. The crate carries the code, the docs and the licence; the gallery stills, the showcase frames, the packaging files and the scripts stay out of it.
+- The Homebrew formula for the `zacesshq/tap` tap and the winget manifests for `Zacess.Scenes` are filled in for this release, so the tap and the winget submission follow straight from the release files.
+- A diagram in the README of how a scene is drawn: the settings, the theme, the scene, the renderer and where a frame goes.
+
 ### Changed
 
+- The README's install section covers each route on its own: Homebrew on macOS and Linux, winget on Windows, Cargo from crates.io, the release archives for each platform with the checksum check and a script that fetches the newest release for the machine it runs on.
 - Community files follow the [AI policy](https://github.com/zacesshq/.github/blob/main/AI_POLICY.md): pull requests declare AI use and issue forms ask whether AI helped. Security reports go to security@zacess.com.
+- Routine tidy-up.
 
 ## [0.5.1] - 2026-11-01
 
@@ -116,7 +126,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - The README, this changelog, the accessibility statement, the contributing guide, the security policy, the support guide, the code of conduct, a licensing notice for the Zacess mark and the palette, issue forms for a bug, a scene idea and an accessibility problem, a pull request template, CODEOWNERS and Dependabot for the actions and the Cargo dependencies.
 - `docs/scenes.md`, which describes every scene and its reduced motion behaviour.
 
-[Unreleased]: https://github.com/zacesshq/scenes/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/zacesshq/scenes/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/zacesshq/scenes/compare/v0.5.1...v0.6.0
 [0.5.1]: https://github.com/zacesshq/scenes/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/zacesshq/scenes/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/zacesshq/scenes/compare/v0.3.0...v0.4.0
