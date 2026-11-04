@@ -107,6 +107,30 @@ jobs:
           ASSET: ${{ steps.package.outputs.asset }}
         run: gh release upload "$TAG" "$ASSET" "$ASSET.sha256" --repo "$GITHUB_REPOSITORY" --clobber
 
+  # publishes the crate to crates.io through Trusted Publishing: the job proves its identity to
+  # crates.io with GitHub's OIDC token from the crates-io environment, so no crates.io token is
+  # stored anywhere. Runs only once every platform build has attached its archive.
+  publish:
+    name: Publish to crates.io
+    needs: build
+    runs-on: ubuntu-latest
+    environment: crates-io
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: stable
+      - uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
+        id: auth
+      - run: cargo publish --locked
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+
   notify-site:
     name: Tell the website
     # runs once every platform's files are attached, so the site never reads a half-filled release
